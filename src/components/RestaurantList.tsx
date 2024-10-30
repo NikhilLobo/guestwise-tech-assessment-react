@@ -1,6 +1,6 @@
 import React from "react";
 import { ListGroup, Container } from "react-bootstrap";
-
+import { useRestaurants } from "../hooks/useRestaurants";
 type Restaurant = {
   id: number;
   name: string;
@@ -14,31 +14,15 @@ type RestaurantListProps = {
 const RestaurantList: React.FC<RestaurantListProps> = ({
   onRestaurantSelect,
 }) => {
-  const restaurants = [
-    {
-      id: 1,
-      name: "Velvet & Vine",
-      shortDescription: "A fine dining experience with a modern twist.",
-      cuisine: "French",
-      rating: 4.7,
-      details: {
-        id: 1,
-        address: "123 Fine St, London",
-        openingHours: {
-          weekday: "12:00 PM - 10:00 PM",
-          weekend: "11:00 AM - 11:00 PM",
-        },
-        reviewScore: 4.7,
-        contactEmail: "info@gourmetkitchen.com",
-      },
-    },
-  ];
+  const { data: restaurants, isLoading, error } = useRestaurants();
 
+  if (isLoading) return <p>Loading...</p>;
+  if (error) return <p>Error fetching restaurants</p>;
   return (
     <Container>
       <h2>Restaurants</h2>
       <ListGroup>
-        {restaurants.map((restaurant) => (
+        {restaurants.map((restaurant: Restaurant) => (
           <ListGroup.Item
             key={restaurant.id}
             action
