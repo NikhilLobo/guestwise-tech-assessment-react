@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { bookingSchema } from "../schemas/bookingSchema";
 import { Container, Form, Button, Alert } from "react-bootstrap";
@@ -20,6 +20,7 @@ const BookTable: React.FC = () => {
   } = useForm<BookingFormInputs>({
     resolver: zodResolver(bookingSchema),
   });
+
   const onSubmit = async (data: BookingFormInputs) => {
     const formData = {
       ...data,
@@ -48,29 +49,39 @@ const BookTable: React.FC = () => {
       console.log("Completed request");
     }
   };
+
   return (
     <Container>
       <h2>Book a Table</h2>
 
       {submissionStatus === "success" && (
-        <Alert variant="success">Booking successful!</Alert>
+        <Alert variant="success" role="alert">
+          Booking successful!
+        </Alert>
       )}
       {submissionStatus === "error" && (
-        <Alert variant="danger">Failed to book table. Please try again.</Alert>
+        <Alert variant="danger" role="alert">
+          Failed to book table. Please try again.
+        </Alert>
       )}
 
       <Form onSubmit={handleSubmit(onSubmit)}>
         <Form.Group>
-          <Form.Label>Name</Form.Label>
-          <Form.Control {...register("name")} />
+          <Form.Label htmlFor="name">Name</Form.Label>
+          <Form.Control id="name" aria-label="name" {...register("name")} />
           {errors.name && (
             <Form.Text className="text-danger">{errors.name.message}</Form.Text>
           )}
         </Form.Group>
 
         <Form.Group>
-          <Form.Label>Email</Form.Label>
-          <Form.Control type="email" {...register("email")} />
+          <Form.Label htmlFor="email">Email</Form.Label>
+          <Form.Control
+            id="email"
+            type="email"
+            aria-label="email"
+            {...register("email")}
+          />
           {errors.email && (
             <Form.Text className="text-danger">
               {errors.email.message}
@@ -79,8 +90,8 @@ const BookTable: React.FC = () => {
         </Form.Group>
 
         <Form.Group>
-          <Form.Label>Phone</Form.Label>
-          <Form.Control {...register("phone")} />
+          <Form.Label htmlFor="phone">Phone</Form.Label>
+          <Form.Control id="phone" aria-label="phone" {...register("phone")} />
           {errors.phone && (
             <Form.Text className="text-danger">
               {errors.phone.message}
@@ -89,8 +100,13 @@ const BookTable: React.FC = () => {
         </Form.Group>
 
         <Form.Group>
-          <Form.Label>Date & Time</Form.Label>
-          <Form.Control type="datetime-local" {...register("dateTime")} />
+          <Form.Label htmlFor="dateTime">Date & Time</Form.Label>
+          <Form.Control
+            id="dateTime"
+            type="datetime-local"
+            aria-label="dateTime"
+            {...register("dateTime")}
+          />
           {errors.dateTime && (
             <Form.Text className="text-danger">
               {errors.dateTime.message}
@@ -99,11 +115,13 @@ const BookTable: React.FC = () => {
         </Form.Group>
 
         <Form.Group>
-          <Form.Label>Number of Guests</Form.Label>
+          <Form.Label htmlFor="guests">Number of Guests</Form.Label>
           <Form.Control
+            id="guests"
             type="number"
+            aria-label="guests"
             {...register("guests", {
-              valueAsNumber: true, // Automatically treat value as a number
+              valueAsNumber: true,
             })}
           />
           {errors.guests && (
