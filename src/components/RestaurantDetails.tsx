@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Card, Container } from "react-bootstrap";
+import { Card, Container, Spinner } from "react-bootstrap";
 import { getRestaurantDetails } from "../services/api";
+import { useRestaurantDetails } from "../hooks/useRestaurantDetails";
 
 type RestaurantDetailsProps = {
   restaurantId: number;
@@ -19,26 +20,28 @@ type RestaurantDetailsData = {
 const RestaurantDetails: React.FC<RestaurantDetailsProps> = ({
   restaurantId,
 }) => {
-  if (!restaurantId) return null;
-
-  const details = {
-    address: "123 Fine St, London",
-    openingHours: {
-      weekday: "12:00 PM - 10:00 PM",
-      weekend: "11:00 AM - 11:00 PM",
-    },
-    reviewScore: 4.7,
-    contactEmail: "info@velvetandvine.co.uk",
-  };
+  const {
+    data: details,
+    isLoading,
+    error,
+  } = useRestaurantDetails(restaurantId);
+  if (isLoading) return <Spinner animation="border" />;
+  if (error) return <p>Failed to fetch restaurant details.</p>;
+  if (!details) return null;
 
   return (
     <Container>
       <Card>
         <Card.Body>
           <Card.Title>Restaurant Details</Card.Title>
-          <Card.Text>Address: {details.address}</Card.Text>
-          <Card.Text>Review Score: {details.reviewScore}</Card.Text>
-          <Card.Text>Contact: {details.contactEmail}</Card.Text>
+          <Card.Text>Name: {details.name}</Card.Text>
+          <Card.Text>Address: {details.details.address}</Card.Text>
+          <Card.Text>Address: {details.details.address}</Card.Text>
+          <Card.Text>Review Score: {details.rating}</Card.Text>
+          <Card.Text>Contact: {details.details.contactEmail}</Card.Text>
+          <Card.Text>Opening Hours</Card.Text>
+          <Card.Text>Weekday: {details.details.openingHours.weekday}</Card.Text>
+          <Card.Text>Weekend: {details.details.openingHours.weekend}</Card.Text>
         </Card.Body>
       </Card>
     </Container>
